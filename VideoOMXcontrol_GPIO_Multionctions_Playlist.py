@@ -219,8 +219,6 @@ while True:
         subprocess.Popen(['omxplayer','--aspect-mode', 'stretch', '-o', 'local', Selection(vid)], stdin=subprocess.PIPE)
         time.sleep(3)   # tempo pour laisser le temps au player vidéo de démarrer
 
- #   time.sleep(2)     # délay de répétition de pression sur le bouton si on le maintient enfoncé
-
 # on réinitialise les ports GPIO en sortie de script
 GPIO.cleanup()
 
