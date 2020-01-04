@@ -1,5 +1,10 @@
 #!/usr/bin/env python2.7
 # coding: utf-8
+# Compatible Python3
+
+# Programme pour RaspberryPi
+# Joue une playliste de vidéos avec omxplayer
+# Pilotage des vidéos et de la playliste avec 5 boutons GPIO
 
 ##################################
 # Import des modules nécessaires #
@@ -12,11 +17,11 @@ import time
 #############
 # Init GPIO #
 #############
-PIN_PLAY = 31           # GPIO06, Play/Pause/Stop
+PIN_PLAY = 31           # GPIO06, Play/Pause/Stop [Appuie court et long]
 PIN_VOLMOINS = 35       # GPIO19, Volume -
 PIN_VOLPLUS = 37        # GPIO26, Volume +
-PIN_PRECEDENT = 38      # GPIO20, Précédent
-PIN_SUIVANT = 36        # GPIO16, Suivant
+PIN_PRECEDENT = 38      # GPIO20, Précédent [Appuie court et long]
+PIN_SUIVANT = 36        # GPIO16, Suivant [Appuie court et long]
 
 GPIO.setmode(GPIO.BOARD) ## Use board pin numbering
 GPIO.setup(PIN_PLAY, GPIO.IN, pull_up_down=GPIO.PUD_UP)
