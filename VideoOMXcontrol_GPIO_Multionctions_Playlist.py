@@ -1,11 +1,9 @@
 #!/usr/bin/env python2.7
 # coding: utf-8
-# on importe les modules nécessaires
 
-# À FAIRE :
-# - Démarrer les vidéos avec un niveau sonnore bas
-# -
-
+##################################
+# Import des modules nécessaires #
+##################################
 from omxcontrol import *
 import subprocess
 import RPi.GPIO as GPIO
@@ -53,8 +51,6 @@ end = 0
 ##########################
 os.system('sudo pkill omxplayer')       # S'assure qu'aucune instance omxplayer ne tourne encore, en cas de plantage
 # omxplayer /home/pi/deathsml_15-07-2015_1cc_h264-21.mp4 --aspect-mode stretch -o local
-subprocess.Popen(['omxplayer','--aspect-mode', 'stretch', '-o', 'local', Selection(vid)], stdin=subprocess.PIPE)
-time.sleep(3)
 
 # fonction qui sera appelée quand on appuiera sur le bouton : PIN_VOLMOINS
 def bouton_PIN_VOLMOINS(channel):
@@ -218,6 +214,13 @@ while True:
         print('Selection : ',Selection(vid))
         subprocess.Popen(['omxplayer','--aspect-mode', 'stretch', '-o', 'local', Selection(vid)], stdin=subprocess.PIPE)
         time.sleep(3)   # tempo pour laisser le temps au player vidéo de démarrer
+        omx = OmxControl()      # appel librairie OmxControl
+        omx.action(OmxControl.ACTION_DECREASE_VOLUME)
+        omx.action(OmxControl.ACTION_DECREASE_VOLUME)
+        omx.action(OmxControl.ACTION_DECREASE_VOLUME)
+        omx.action(OmxControl.ACTION_DECREASE_VOLUME)
+        omx.action(OmxControl.ACTION_DECREASE_VOLUME)
+        omx.action(OmxControl.ACTION_DECREASE_VOLUME)	# -18 db
 
 # on réinitialise les ports GPIO en sortie de script
 GPIO.cleanup()
@@ -256,4 +259,3 @@ GPIO.cleanup()
 #ACTION_HIDE_VIDEO
 #ACTION_UNHIDE_VIDEO
 #ACTION_HIDE_SUBTITLES
-
