@@ -8,4 +8,4 @@ sleep 4
 
 #mplayer 01-Bridge\ Burning.mp3
 #omxplayer /home/pi/deathsml_15-07-2015_1cc_h264-21.mp4 --aspect-mode stretch -o local
-/usr/bin/python3 /home/pi/omxcontrol/VideoOMXcontrol_GPIO_DeuxFonction.py
+/usr/bin/python3 /home/pi/omxcontrol/VideoOMXcontrol_GPIO_Multifonctions_Playlist.py
