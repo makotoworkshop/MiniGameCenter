@@ -6,6 +6,7 @@
 # Joue une playliste de vidéos avec omxplayer
 # Pilotage des vidéos et de la playliste avec 5 boutons GPIO
 
+
 ##################################
 # Import des modules nécessaires #
 ##################################
@@ -17,11 +18,12 @@ import time
 #############
 # Init GPIO #
 #############
-PIN_PLAY = 31           # GPIO06, Play/Pause/Stop [Appuie court et long]
+PIN_PLAY = 31           # GPIO06, Play/Pause/Stop  [Appuie court et long]
 PIN_VOLMOINS = 35       # GPIO19, Volume -
 PIN_VOLPLUS = 37        # GPIO26, Volume +
 PIN_PRECEDENT = 38      # GPIO20, Précédent [Appuie court et long]
 PIN_SUIVANT = 36        # GPIO16, Suivant [Appuie court et long]
+PIN_BRIGHTNESS = 12	# GPIO18, PWM de réglage de la luminosité
 
 GPIO.setmode(GPIO.BOARD) ## Use board pin numbering
 GPIO.setup(PIN_PLAY, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -29,6 +31,7 @@ GPIO.setup(PIN_VOLMOINS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(PIN_VOLPLUS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(PIN_PRECEDENT, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(PIN_SUIVANT, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(PIN_BRIGHTNESS, GPIO.OUT)
 
 #####################
 # Ressources Vidéos #
@@ -50,15 +53,20 @@ long_press = 1
 very_long_press = 3
 start = 0
 end = 0
+brightness = 100
+pwm = GPIO.PWM(PIN_BRIGHTNESS, 130) # channel et frequence en Hz, meilleur résultat à 120 et 130Hz
 
 ##########################
 # Démarrage (facultatif) #
 ##########################
 os.system('sudo pkill omxplayer')       # S'assure qu'aucune instance omxplayer ne tourne encore, en cas de plantage
 # omxplayer /home/pi/deathsml_15-07-2015_1cc_h264-21.mp4 --aspect-mode stretch -o local
+pwm.start(brightness)	# Démarrage de la PWM du rétroéclairage LCD au max (100)
+
 
 # fonction qui sera appelée quand on appuiera sur le bouton : PIN_VOLMOINS
 def bouton_PIN_VOLMOINS(channel):
+    global brightness
     global start
     global end
     if GPIO.input(channel) == GPIO.LOW:
@@ -75,8 +83,13 @@ def bouton_PIN_VOLMOINS(channel):
             print('Fonction à définir')
         elif (elapsed > long_press):
             print("long_press :",long_press)
-            # À DÉFINIR
-            print('Fonction à définir')
+            # Baisser la luminosité de l'écran LCD
+            brightness = brightness - 10
+            if brightness <= 10:
+                brightness = 10
+                print("Luminosité baissée au max")
+            print("Baisse la luminosite :", brightness)
+            pwm.ChangeDutyCycle(brightness)
         elif (elapsed > 0):
             print("short_press")
             # Baisser le Volume du son
@@ -85,6 +98,7 @@ def bouton_PIN_VOLMOINS(channel):
 
 
 def bouton_PIN_VOLPLUS(channel):
+    global brightness
     global start
     global end
     if GPIO.input(channel) == GPIO.LOW:
@@ -101,8 +115,13 @@ def bouton_PIN_VOLPLUS(channel):
             print('Fonction à définir')
         elif (elapsed > long_press):
             print("long_press :",long_press)
-            # À DÉFINIR
-            print('Fonction à définir')
+            # Augmenter la luminosité de l'écran LCD
+            brightness = brightness + 10
+            if brightness >= 100:
+                brightness = 100
+                print("Luminosité augmentée au max")
+            print("Augmente la luminosite :", brightness)
+            pwm.ChangeDutyCycle(brightness)
         elif (elapsed > 0):
             print("short_press")
             # Monter le Volume du son
@@ -215,7 +234,7 @@ while True:
         omx = OmxControl()      # appel librairie OmxControl
 
     except OmxControlError as ex:       # si le controle ne voit plus D-Bus, relance la vidéo
-        print("ERROR contrôle D-Bus")
+        print("ERREUR de contrôle D-Bus, relance de la vidéo")
         print('Selection : ',Selection(vid))
         subprocess.Popen(['omxplayer','--aspect-mode', 'stretch', '-o', 'local', Selection(vid)], stdin=subprocess.PIPE)
         time.sleep(3)   # tempo pour laisser le temps au player vidéo de démarrer
