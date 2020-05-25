@@ -139,7 +139,7 @@ void arcade() {
 
 void decodage_touche() {
     if (irrecv.decode(&results)) {
-    Serial.println(results.value, HEX);
+ //   Serial.println(results.value, HEX);
     irrecv.resume(); // Receive the next value
   }
 }
@@ -148,7 +148,7 @@ void decodage_touche() {
 //# PROGRAMME #
 //#############
 void loop() {
-//  decodage_touche();  // pour récupérer le code des touches
+  decodage_touche();  // pour récupérer le code des touches
   arcade();
   delay(100);
 }
