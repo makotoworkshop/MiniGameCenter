@@ -4,7 +4,7 @@
 
 # Programme pour RaspberryPi
 # Joue une playliste de vidéos avec omxplayer
-# Pilotage des vidéos et de la playliste avec 5 boutons GPIO
+# Pilotage des vidéos et de la playliste avec une télécommande IR via un Arduino + bluetooth
 
 
 ##################################
@@ -19,20 +19,12 @@ import serial
 #############
 # Init GPIO #
 #############
-PIN_PLAY = 31           # GPIO06, Play/Pause/Stop  [Appuie court et long]
-PIN_VOLMOINS = 35       # GPIO19, Volume -
-PIN_VOLPLUS = 37        # GPIO26, Volume +
-PIN_PRECEDENT = 38      # GPIO20, Précédent [Appuie court et long]
-PIN_SUIVANT = 36        # GPIO16, Suivant [Appuie court et long]
-PIN_BRIGHTNESS = 12	# GPIO18, PWM de réglage de la luminosité
+PIN_BRIGHTNESS = 12     # GPIO18, PWM de réglage de la luminosité
+PIN_POWEROFF = 40       # GPIO21, Uniquement PowerOff logiciel. Le powerOn, via Arduino + switch RpiOnOff
 
 GPIO.setmode(GPIO.BOARD) ## Use board pin numbering
-GPIO.setup(PIN_PLAY, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(PIN_VOLMOINS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(PIN_VOLPLUS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(PIN_PRECEDENT, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(PIN_SUIVANT, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(PIN_BRIGHTNESS, GPIO.OUT)
+GPIO.setup(PIN_POWEROFF, GPIO.OUT)
 
 bluetoothSerial = serial.Serial("/dev/rfcomm0",baudrate=115200)
 print("Bluetooth connected")
@@ -53,10 +45,6 @@ def Selection(i):
 # Variables #
 #############
 vid = 0
-long_press = 1
-very_long_press = 3
-start = 0
-end = 0
 brightness = 100
 pwm = GPIO.PWM(PIN_BRIGHTNESS, 130) # channel et frequence en Hz, meilleur résultat à 120 et 130Hz
 
@@ -67,172 +55,9 @@ os.system('sudo pkill omxplayer')       # S'assure qu'aucune instance omxplayer 
 # omxplayer /home/pi/deathsml_15-07-2015_1cc_h264-21.mp4 --aspect-mode stretch -o local
 pwm.start(brightness)	# Démarrage de la PWM du rétroéclairage LCD au max (100)
 
-
-# fonction qui sera appelée quand on appuiera sur le bouton : PIN_VOLMOINS
-def bouton_PIN_VOLMOINS(channel):
-    global brightness
-    global start
-    global end
-    if GPIO.input(channel) == GPIO.LOW:
-        print("GPIO.LOW")
-        start = time.time()
-    if GPIO.input(channel) == GPIO.HIGH:
-        print("GPIO.HIGH")
-        end = time.time()
-        elapsed = end - start
-        print(elapsed)
-        if (elapsed > very_long_press):
-            print("very_long_press: ",very_long_press)
-            # À DÉFINIR
-            print('Fonction à définir')
-        elif (elapsed > long_press):
-            print("long_press :",long_press)
-            # Baisser la luminosité de l'écran LCD
-            brightness = brightness - 10
-            if brightness <= 10:
-                brightness = 10
-                print("Luminosité baissée au max")
-            print("Baisse la luminosite :", brightness)
-            pwm.ChangeDutyCycle(brightness)
-        elif (elapsed > 0):
-            print("short_press")
-            # Baisser le Volume du son
-            print("Button Volume - pressé")
-            omx.action(OmxControl.ACTION_DECREASE_VOLUME)
-
-
-def bouton_PIN_VOLPLUS(channel):
-    global brightness
-    global start
-    global end
-    if GPIO.input(channel) == GPIO.LOW:
-        print("GPIO.LOW")
-        start = time.time()
-    if GPIO.input(channel) == GPIO.HIGH:
-        print("GPIO.HIGH")
-        end = time.time()
-        elapsed = end - start
-        print(elapsed)
-        if (elapsed > very_long_press):
-            print("very_long_press: ",very_long_press)
-            # À DÉFINIR
-            print('Fonction à définir')
-        elif (elapsed > long_press):
-            print("long_press :",long_press)
-            # Augmenter la luminosité de l'écran LCD
-            brightness = brightness + 10
-            if brightness >= 100:
-                brightness = 100
-                print("Luminosité augmentée au max")
-            print("Augmente la luminosite :", brightness)
-            pwm.ChangeDutyCycle(brightness)
-        elif (elapsed > 0):
-            print("short_press")
-            # Monter le Volume du son
-            print("Button Volume + pressé")
-            omx.action(OmxControl.ACTION_INCREASE_VOLUME)
-
-
-def bouton_PIN_PRECEDENT(channel):
-    global vid
-    global start
-    global end
-    if GPIO.input(channel) == GPIO.LOW:
-        print("GPIO.LOW")
-        start = time.time()
-    if GPIO.input(channel) == GPIO.HIGH:
-        print("GPIO.HIGH")
-        end = time.time()
-        elapsed = end - start
-        print(elapsed)
-        if (elapsed > very_long_press):
-            print("very_long_press: ",very_long_press)
-            # À DÉFINIR
-            print('Fonction à définir')
-        elif (elapsed > long_press):
-            print("long_press :",long_press)
-            # Stopper la lecture et tombe donc en erreur via Try > Except de la boucle principale
-            print('Vidéo Précédente')
-            omx.action(OmxControl.ACTION_EXIT)
-            vid = vid - 1       # pour lire la vidéo précédente
-            if vid == -1:
-                vid = 3
-            print('vid : ',vid)
-        elif (elapsed > 0):
-            print("short_press")
-            # un petit saut un arriére dans la vidéo
-            print('<<')
-            omx.action(OmxControl.ACTION_SEEK_BACK_SMALL)
-
-
-def bouton_PIN_SUIVANT(channel):
-    global vid
-    global start
-    global end
-    if GPIO.input(channel) == GPIO.LOW:
-        print("GPIO.LOW")
-        start = time.time()
-    if GPIO.input(channel) == GPIO.HIGH:
-        print("GPIO.HIGH")
-        end = time.time()
-        elapsed = end - start
-        print(elapsed)
-        if (elapsed > very_long_press):
-            print("very_long_press: ",very_long_press)
-            # À DÉFINIR
-            print('Fonction à définir')
-        elif (elapsed > long_press):
-            print("long_press :",long_press)
-            # Stopper la lecture et tombe donc en erreur via Try > Except de la boucle principale
-            print('Vidéo Suivante')
-            omx.action(OmxControl.ACTION_EXIT)
-            vid = vid + 1       # pour lire la vidéo suivante
-            if vid == 4:
-                vid = 0
-            print('vid : ',vid)
-        elif (elapsed > 0):
-            print("short_press")
-            # un petit saut en avant dans la vidéo
-            print('>>')
-            omx.action(OmxControl.ACTION_SEEK_FORWARD_SMALL)
-
-
-def bouton_PIN_PLAY(channel):
-    global start
-    global end
-    if GPIO.input(channel) == GPIO.LOW:
-        print("GPIO.LOW")
-        start = time.time()
-    if GPIO.input(channel) == GPIO.HIGH:
-        print("GPIO.HIGH")
-        end = time.time()
-        elapsed = end - start
-        print(elapsed)
-        if (elapsed > very_long_press):
-            print("very_long_press: ",very_long_press)
-            # À DÉFINIR
-            print('Fonction à définir')
-        elif (elapsed > long_press):
-            print("long_press :",long_press)
-            # Stoppe la vidéo
-            print('Stop')
-            omx.action(OmxControl.ACTION_EXIT)	 # SORTIR DE LA BOUCLE PRINCIPALE sinon la vidéo se relancera
-        elif (elapsed > 0):
-            print("short_press")
-            # Pause/Play la vidéo
-            print('Pause/Play')
-            omx.action(OmxControl.ACTION_PAUSE)
-
-
-GPIO.add_event_detect(PIN_VOLMOINS, GPIO.BOTH, callback=bouton_PIN_VOLMOINS, bouncetime=100)
-GPIO.add_event_detect(PIN_VOLPLUS, GPIO.BOTH, callback=bouton_PIN_VOLPLUS, bouncetime=100)
-GPIO.add_event_detect(PIN_PRECEDENT, GPIO.BOTH, callback=bouton_PIN_PRECEDENT, bouncetime=100)
-GPIO.add_event_detect(PIN_SUIVANT, GPIO.BOTH, callback=bouton_PIN_SUIVANT, bouncetime=100)
-GPIO.add_event_detect(PIN_PLAY, GPIO.BOTH, callback=bouton_PIN_PLAY, bouncetime=100)
-
-############################
-# Fonctions pour Bluetooth #
-############################
+###############################
+# Fonctions pour Télécommande #
+###############################
 
 def bouton_VOLUMEMOINS():
     # baisse le volume
@@ -307,7 +132,8 @@ def bouton_STOP():
     omx.action(OmxControl.ACTION_EXIT)
 
 def bouton_POWEROFF():
-    # activer le gpio correspondant
+    # activer le gpio21
+    GPIO.output(PIN_POWEROFF, GPIO.HIGH)
     print('PowerOFF')
 
 #####################
@@ -396,4 +222,3 @@ GPIO.cleanup()
 #ACTION_HIDE_VIDEO
 #ACTION_UNHIDE_VIDEO
 #ACTION_HIDE_SUBTITLES
-
