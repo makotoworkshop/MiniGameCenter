@@ -8,9 +8,10 @@
 //# DÉCLARATIONS #
 //################
 //——— Prototypes Fonctions ———//
-void arcade(void);
 void decodage_touche(void);
-void Power(void);
+void Selection(void);
+void PowerONOFF(void);
+void ForcePowerOFF(void);
 
 //——— Pins ———//
 #define RPi02   2
