@@ -323,7 +323,7 @@ void ForcePowerOFF(){
     Serial.println("Force Power OFF Rpi N°1");
     results.value = 0;          // empéche la répétition de touche
     digitalWrite(RPi01, LOW);   // Force Power OFF Rpi N°1
-    delay(3000);                 // simule un appuie long
+    delay(4000);                 // simule un appuie long
     digitalWrite(RPi01, HIGH);
   }
   else if ((Activation == 2) && ((results.value == 0x1F6) || (results.value == 0x9F6))) {
@@ -331,7 +331,7 @@ void ForcePowerOFF(){
     Serial.println("Force Power OFF Rpi N°2");
     results.value = 0;          // empéche la répétition de touche
     digitalWrite(RPi02, LOW);   // Force Power OFF Rpi N°2
-    delay(3000);                 // simule un appuie long
+    delay(4000);                 // simule un appuie long
     digitalWrite(RPi02, HIGH);
   }
   else if ((Activation == 3) && ((results.value == 0x1F6) || (results.value == 0x9F6))) {
@@ -339,7 +339,7 @@ void ForcePowerOFF(){
     Serial.println("Force Power OFF Rpi N°3");
     results.value = 0;          // empéche la répétition de touche
     digitalWrite(RPi03, LOW);   // Force Power OFF Rpi N°3
-    delay(3000);                 // simule un appuie long
+    delay(4000);                 // simule un appuie long
     digitalWrite(RPi03, HIGH);
   }
   else if ((Activation == 4) && ((results.value == 0x1F6) || (results.value == 0x9F6))) {
@@ -347,7 +347,7 @@ void ForcePowerOFF(){
     Serial.println("Force Power OFF Rpi N°4");
     results.value = 0;          // empéche la répétition de touche
     digitalWrite(RPi04, LOW);   // Force Power OFF Rpi N°4
-    delay(3000);                 // simule un appuie long
+    delay(4000);                 // simule un appuie long
     digitalWrite(RPi04, HIGH);
   }
   else if ((Activation == 5) && ((results.value == 0x1F6) || (results.value == 0x9F6))) {
@@ -355,7 +355,7 @@ void ForcePowerOFF(){
     Serial.println("Force Power OFF Rpi N°5");
     results.value = 0;          // empéche la répétition de touche
     digitalWrite(RPi05, LOW);   // Force Power OFF Rpi N°5
-    delay(3000);                 // simule un appuie long
+    delay(4000);                 // simule un appuie long
     digitalWrite(RPi05, HIGH);
   }
   else if ((Activation == 6) && ((results.value == 0x1F6) || (results.value == 0x9F6))) {
@@ -363,7 +363,7 @@ void ForcePowerOFF(){
     Serial.println("Force Power OFF Rpi N°6");
     results.value = 0;          // empéche la répétition de touche
     digitalWrite(RPi06, LOW);   // Force Power OFF Rpi N°6
-    delay(3000);                 // simule un appuie long
+    delay(4000);                 // simule un appuie long
     digitalWrite(RPi06, HIGH);
   }
   else if ((Activation == 7) && ((results.value == 0x1F6) || (results.value == 0x9F6))) {
@@ -371,7 +371,7 @@ void ForcePowerOFF(){
     Serial.println("Force Power OFF Rpi N°7");
     results.value = 0;          // empéche la répétition de touche
     digitalWrite(RPi07, LOW);   // Force Power OFF Rpi N°7
-    delay(3000);                 // simule un appuie long
+    delay(4000);                 // simule un appuie long
     digitalWrite(RPi07, HIGH);
   }
   else if ((Activation == 8) && ((results.value == 0x1F6) || (results.value == 0x9F6))) {
@@ -379,7 +379,7 @@ void ForcePowerOFF(){
     Serial.println("Force Power OFF Rpi N°8");
     results.value = 0;          // empéche la répétition de touche
     digitalWrite(RPi08, LOW);   // Force Power OFF Rpi N°8
-    delay(3000);                 // simule un appuie long
+    delay(4000);                 // simule un appuie long
     digitalWrite(RPi08, HIGH);
   }
   else if ((Activation == 9) && ((results.value == 0x1F6) || (results.value == 0x9F6))) {
@@ -387,7 +387,7 @@ void ForcePowerOFF(){
     Serial.println("Force Power OFF Rpi N°9");
     results.value = 0;          // empéche la répétition de touche
     digitalWrite(RPi09, LOW);   // Force Power OFF Rpi N°9
-    delay(3000);                 // simule un appuie long
+    delay(4000);                 // simule un appuie long
     digitalWrite(RPi09, HIGH);
   }
   else if ((Activation == 10) && ((results.value == 0x1F6) || (results.value == 0x9F6))) {
@@ -395,7 +395,7 @@ void ForcePowerOFF(){
     Serial.println("Force Power OFF Rpi N°10");
     results.value = 0;          // empéche la répétition de touche
     digitalWrite(RPi10, LOW);   // Force Power OFF Rpi N°10
-    delay(3000);                 // simule un appuie long
+    delay(4000);                 // simule un appuie long
     digitalWrite(RPi10, HIGH);
   }
 }
